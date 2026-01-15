@@ -1,0 +1,3 @@
+#!/bin/bash
+# Claude Projects Dashboard Launcher
+exec "$HOME/claude-workspace/.claude/scripts/generate-dashboard.sh"
