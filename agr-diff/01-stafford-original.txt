@@ -1,0 +1,245 @@
+[000 normal] 
+[001 Heading 1] Master Services Agreement
+[002 normal] This Master Services Agreement ("Agreement") is made and entered into as of ________________ (the "Effective Date"), by and between:
+[003 normal] Remix Partners, Inc. ("Consultant"), a corporation with its principal place of business at 1322 W Deerpath, Lake Forest, IL 60045, and
+[004 normal] AGR Partners ("Client"), a corporation with its principal place of business at __________________________________________________.
+[005 normal] (Collectively referred to as the "Parties" and individually as a "Party").
+[006 normal] WHEREAS, Client desires to engage Consultant to provide certain professional services, and Consultant desires to provide such services to Client, pursuant to the terms and conditions set forth herein.
+[007 normal] NOW, THEREFORE, in consideration of the mutual covenants and promises contained herein, the Parties agree as follows:
+[008 normal] 1. SERVICES
+Consultant shall provide the services ("Services") described in one or more Statements of Work ("SOW") executed by the Parties. Each SOW shall be subject to the terms of this Agreement and is incorporated herein by reference. In the event of a conflict between this Agreement and an SOW, the terms of the SOW shall prevail regarding the specific Services described therein.
+[009 normal] 2. FEES AND PAYMENT
+Client agrees to pay Consultant the fees set forth in the applicable SOW. Unless otherwise specified in an SOW, Consultant shall invoice Client for fees and reimbursable expenses, and Client shall pay such invoices within fifteen (15) days of receipt. Late payments may be subject to interest at the lesser of 1.5% per month or the maximum rate permitted by law.
+[010 normal] 3. INDEPENDENT CONTRACTOR
+Consultant is an independent contractor. Nothing in this Agreement shall be construed to create a partnership, joint venture, or employer-employee relationship between the Parties. Consultant shall be solely responsible for all taxes, withholdings, and other statutory obligations regarding its personnel.
+[011 normal] 4. OWNERSHIP OF CLIENT MATERIALS and CUSTOM DELIVERABLES
+
+A. Client Input Materials: All data, pre-existing proprietary source materials, and company-specific documents provided by the Client to the Consultant for use in the Services remain the sole property of the Client.
+[012 normal] B. Custom Deliverables: The Client retains all right, title, and interest in the unique, final, and customized output specifically created for the Client under a Statement of Work (SOW), which may include customized strategy documents, reports, and the Final Client Prompt Chain (as defined below).
+[013 normal] C. Final Client Prompt Chain: This is the highly specific, customized, and proprietary sequence of instructions and variables developed by the Consultant that relies on and incorporates the Client Input Materials to produce the Custom Deliverables. This chain is an IP asset of the Client upon final payment.
+[014 normal] D. Assignment: To the extent any intellectual property rights in the Custom Deliverables and Final Client Prompt Chain do not vest automatically in the Client, the Consultant hereby assigns all such rights to the Client upon final payment for the applicable SOW.
+
+5. CONSULTANT’S TOOL INTELLECTUAL PROPERTY and REUSABLE ASSETS
+[015 normal] The Client acknowledges and agrees that the Consultant retains all right, title, and interest in its Consultant Tool IP.
+
+A. Consultant Tool IP: This includes all pre-existing methodologies, proprietary templates, general know-how, internal process documents, and Generic Prompt Templates developed by the Consultant that may be used to initiate or structure the Services.
+
+B. Generic Prompt Template: This is the foundational, non-client-specific prompt structure (e.g., "Analyze X using Y framework and respond in Z format") that is customized and adapted for various clients. Generic Prompt Templates are and will remain the exclusive property and Confidential Information of the Consultant.
+
+C. License: The Consultant grants the Client a non-exclusive, royalty-free, perpetual license to use any Consultant Tool IP embedded within the Custom Deliverables solely for the Client's internal business purposes.
+[016 normal] 5. CONFIDENTIALITY
+Each Party ("Receiving Party") agrees to hold in strict confidence all non-public information ("Confidential Information") received from the other Party ("Disclosing Party"). The Receiving Party shall use Confidential Information solely for the purpose of performing obligations under this Agreement. This obligation survives termination of this Agreement for a period of two (2) years, except for trade secrets, which shall remain confidential indefinitely.
+[017 normal] 6. TERM AND TERMINATION
+
+[018 normal] A. Term: This Agreement commences on the Effective Date and continues until terminated by either Party.
+
+[019 normal] B. Termination: Either Party may terminate for material breach if the breaching Party fails to cure such breach within fifteen (15) days of written notice. Other termination provisions shall be governed by each SOW.
+
+C. Effect of Termination: Upon termination, Client shall pay Consultant for all Services performed and expenses incurred up to the effective date of termination.
+[020 normal] 7. LIMITATION OF LIABILITY EXCEPT FOR INDEMNIFICATION OBLIGATIONS OR BREACHES OF CONFIDENTIALITY, NEITHER PARTY SHALL BE LIABLE FOR ANY INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES. CONSULTANT’S TOTAL LIABILITY ARISING OUT OF THIS AGREEMENT SHALL NOT EXCEED THE TOTAL FEES PAID BY CLIENT UNDER THE APPLICABLE SOW IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.
+[021 normal] 8. GENERAL PROVISIONS
+
+A. Governing Law: This Agreement shall be governed by the laws of the State of Illinois.
+
+[022 normal] B. Entire Agreement: This Agreement and executed SOWs constitute the entire agreement between the Parties and supersede all prior agreements.
+
+C. Amendment: Amendments to this Agreement must be in writing and signed by both Parties.
+
+9. MUTUAL INDEMNIFICATION
+[023 normal] A. General Indemnification: Each Party (the "Indemnifying Party") agrees to indemnify, defend, and hold harmless the other Party and its officers, directors, and employees (the "Indemnified Party") from and against any and all third-party claims, damages, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or related to the Indemnifying Party’s gross negligence, willful misconduct, or material breach of this Agreement.
+
+B. Intellectual Property Indemnification:
+[024 normal] By Consultant: Consultant shall indemnify Client against any third-party claim alleging that the Services, Custom Deliverables, or Consultant Tool IP, when used as authorized under this Agreement, infringe any U.S. copyright, trademark, or trade secret.
+[025 normal] By Client: Client shall indemnify Consultant against any third-party claim alleging that the Client Input Materials provided to Consultant infringe any U.S. copyright, trademark, or trade secret.
+[026 normal] C. Procedure: The Indemnified Party must: (i) promptly notify the Indemnifying Party in writing of the claim; (ii) grant the Indemnifying Party sole control of the defense and settlement of the claim; and (iii) provide reasonable cooperation.
+[027 Heading 3] 10. DISPUTE RESOLUTION
+[028 normal] A. Informal Negotiation: In the event of any dispute, controversy, or claim arising out of or relating to this Agreement, the Parties shall first attempt in good faith to resolve the dispute through informal negotiation between executives with authority to settle the matter.
+
+B. Mediation: If the dispute is not resolved within thirty (30) days of the initial notice of dispute, the Parties agree to submit the matter to non-binding mediation under the Commercial Mediation Rules of the American Arbitration Association (AAA). Unless otherwise agreed, the mediation shall take place in the State of Illinois. Each Party shall bear its own costs and divide equally the fees of the mediator.
+
+C. Litigation: Mediation is a condition precedent to the initiation of any litigation, except where a Party seeks immediate injunctive relief to prevent irreparable harm (including breaches of Section 5, Confidentiality).
+[029 normal] IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+[030 normal] Remix Partners, Inc.
+
+Signature: 	
+
+[031 normal] Name: 		Jason Rubinstein
+
+[032 normal] Title: 		Partner & Co-Founder
+[033 normal] 
+[034 normal] 
+[035 normal] AGR Partners
+
+Signature: 	
+
+[036 normal] Name: 		
+[037 Heading 2] Title: 		
+[038 normal] 
+[039 normal] 
+[040 normal] Statement of Work
+Generative AI Strategic Kickstart
+
+[041 normal] Client: AGR Partners
+Date: May 5, 2026
+[042 Heading 1] Executive Summary
+[043 normal] AGR Partners is three months into enterprise ChatGPT and Claude across a lean team of nine, with 22 portfolio partnerships to support across four operating areas. The team is already trialing a PE-focused vendor offering Claude-based prompts and templates at a price range of $20,000 to $50,000 per year, and the open question is whether that vendor delivers differentiated value or simply marks up baseline LLM capability. This Kickstart is designed to make AGR a savvy enough buyer to answer that question from a position of fluency, while building the internal capability to replicate most of what a vendor would sell.
+[044 normal] AGR stands at a strategic inflection point. The team has already organized its AI thinking around four clear verticals (Origination, Execution, Portfolio Management, and Fundraising and Investor Relations); a senior partner who has personally invested in agentic AI training and who has framed the build-versus-buy question with rigor; and at least two builder-class teammates inside the org, including an in-house engineer rolling out an NDA review agent and a model-building skill, and an incoming MBA summer hire who is already shipping skills in Claude Code. Those ingredients are uncommon at AGR's stage, and they shorten the runway between this engagement and lasting impact.
+[045 normal] This engagement will equip AGR's team with a shared vocabulary for generative AI, a prioritized set of opportunities mapped to the four-vertical model, and a 30/60/90-day plan that names what should be built in-house, what is worth buying, and what should wait. By the end of six weeks, AGR will be in position to make the $20,000-to-$50,000 vendor decision on the merits and to capture the operational gains that a lean, decentralized team needs to support 22 partnerships well.
+[046 Heading 1] Background & Context
+[047 Heading 2] Current Situation
+[048 normal] AGR Partners is a lean, decentralized investment firm focused on food and agribusiness, with team members spread across Chicago, Omaha, and points in between. Three months into enterprise ChatGPT and Claude, the team's day-to-day pattern is what the in-house builder described as "top half of the first inning": GenAI is mostly used as a competent intern, helping draft call reports by combining meeting notes with prospect pre-research, and pulling context from S&P Global CapIQ, Outlook, and SharePoint. A small number of teammates have moved past intern-mode. The in-house builder has shipped an NDA review agent and a model-building tool that runs through a master agent inside the firm's co-work environment. The operations and finance lead has a skill that flags emails into a daily briefing alongside the next day's calendar. The incoming MBA summer hire is already building reflection and travel-planning skills in Claude Code. Trust and reliability are uneven across the team, with some teammates leaning in and others using AI lightly to summarize notes.
+[049 normal] Key dynamics shaping this engagement:
+[050 normal] A senior partner is the explicit sponsor and decision-maker on next steps, and has personally invested in agentic AI training (an MIT course login the firm has paid for and can share internally as optional pre-work)
+[051 normal] The team organizes its work around four verticals (Origination, Execution, Portfolio Management, and Fundraising and Investor Relations), and AI use cases naturally fall along those lines
+[052 normal] The team is genuinely lean and decentralized, which means time is the scarcest resource and any engagement has to respect competing priorities and partner travel
+[053 normal] An open build-versus-buy decision is on the table with a PE-focused vendor in the $20,000 to $50,000 per year range, and the team is rightly skeptical of paying a premium for what may be Claude with a markup
+[054 normal] Two internal builders give AGR an unusually strong runway for post-engagement self-support, including one already shipping agents inside the firm's co-work environment
+[055 normal] AI sophistication is uneven across the team, from skill-builders to teammates who do not yet trust GenAI inside their core workflows; an engagement that works for the firm has to work for both ends of that spectrum
+[056 Heading 2] Strategic Opportunity
+[057 normal] The most useful next move for AGR is not to commit to a vendor or to a single tool, but to invest in becoming a sharp enough buyer (and builder) that the four-vertical map fills in with the right opportunities in the right order. Opportunities will fall along AGR's own four-vertical breakdown:
+[058 normal] Origination: top-of-funnel automation that turns meeting transcripts, member-directory enrichments, and pre-call research into briefing materials and routed actions, plus relationship-mapping across the partner network
+[059 normal] Execution: NDA review, diligence model-building support, internal communication drafting, and legal-document analysis, with the in-house builder's existing agents as a starting point that the broader team can extend
+[060 normal] Portfolio Management: structured monitoring and synthesis across the 22 partnerships, with an emphasis on capturing and reusing what AGR already knows about each company rather than rebuilding context every quarter
+[061 normal] Fundraising and Investor Relations: board-meeting prep, competitive analysis, and investor-update drafting, where the build-versus-buy decision against the PE-focused vendor will be settled on real internal experiments rather than a sales conversation
+[062 normal] The deeper move is the one the incoming summer hire named on the call: distillation that is "effectively, not just efficiently." That is the central design principle for what we build together, organizing AGR's institutional knowledge so that AI agents can do real work inside AGR's voice, judgment, and standards rather than producing generic output.
+[063 Heading 1] Objectives
+[064 Heading 2] Primary Goal
+[065 normal] Equip AGR Partners to make the build-versus-buy decision from a position of internal fluency, with a prioritized set of opportunities across the four verticals and the team capability to execute on the highest-priority ones without depending on a PE-focused vendor for templates and prompts.
+[066 Heading 2] Specific Objectives
+[067 normal] Build a shared GenAI vocabulary across the AGR team so people at different sophistication levels can talk about opportunities, risks, and trade-offs in the same language
+[068 normal] Identify and prioritize a set of GenAI opportunities mapped to AGR's four-vertical model (Origination, Execution, Portfolio Management, and Fundraising and Investor Relations)
+[069 normal] Establish a clear line of self-support that distinguishes what the team can build internally from what genuinely warrants outside help
+[070 normal] Use the build-versus-buy assessment of the PE-focused vendor as a live case study, so the team learns by making a real decision with real money on the line
+[071 normal] Extend the in-house builder's existing agents (NDA review, model-building tool, master agent) into the broader team's daily work, starting with the highest-impact uses
+[072 normal] Stand up an institutional-knowledge architecture (file-over-app, well-organized markdown) that lets AI agents do meaningful portfolio and origination work without losing context across sessions
+[073 normal] Generate measurable ROI within 60 days by removing manual bottlenecks (call reports, presentation polish, contact enrichment, NDA review) that consume disproportionate team time
+[074 Heading 1] Engagement Approach
+[075 normal] This engagement follows a learn, experiment, and implement cycle, designed to build practical capabilities while respecting the lean, decentralized rhythm of AGR's team and the real travel and partner-meeting demands on people's calendars.
+[076 normal] 
+[077 Heading 2] Phase 1: Foundation Building & Strategic Alignment (Week 1)
+[078 normal] Format: Half-day in-person session in Chicago, with remote dial-in for teammates who can't be there
+[079 normal] Participants: Core AGR team (the senior partner, the investment associates, the operations and finance lead, the origination lead, the in-house builder, and the incoming MBA summer hire); other teammates can join the recording
+[080 normal] Session Structure
+[081 normal] The session covers AI foundations with executive-level grounding in generative AI capabilities, leadership mindsets for evaluating opportunities, and collaborative ideation across AGR's four verticals. We focus the brainstorm on the highest-friction work the team described: call reports, presentation polish, NDA review, model-building, contact enrichment, and the build-versus-buy assessment of the PE-focused vendor.
+[082 normal] 
+[083 normal] 
+[084 normal] Sample Focus Areas Discussed
+[085 normal] Origination: transcript-driven briefings, contact enrichment, relationship mapping across the partner network
+[086 normal] Execution: NDA review, diligence model-building, internal communication, legal document analysis
+[087 normal] Portfolio Management and IR: structured monitoring across 22 partnerships, board-meeting prep, investor updates
+[088 normal] Phase 1 Deliverables
+[089 normal] Recorded session with full transcript and training materials for any teammates who couldn't attend live
+[090 normal] Prioritized opportunity matrix organizing 15-20 specific GenAI applications across the four verticals, ranked by impact and implementation complexity
+[091 normal] 
+[092 normal] 
+[093 Heading 2] Phase 2: Guided Experimentation (Weeks 2-5)
+[094 normal] Format: Independent execution by the AGR team with structured Remix support
+[095 normal] Team Activities
+[096 normal] Daily GenAI application in real workflows (call reports, NDA review, presentation prep, model-building, contact enrichment)
+[097 normal] Targeted experiments inside one or two priority verticals per teammate, chosen during the Week 1 session
+[098 normal] Cross-team sharing of what's working, including extending the in-house builder's agents into the rest of the team and adapting the daily-briefing skill for other reviewers
+[099 normal] Documentation of results using the tracking framework Remix provides
+[100 normal] Remix Partners Support
+[101 normal] Prompt and context engineering training (one hour, Week 2): hands-on session focused on building prompts and structuring context for the work AGR actually does
+[102 normal] Office hours (one hour, Week 3 or 4, scheduled at the team's preference): no prepared content from Remix; AGR-led session for sharing experiments, wins, and stuck points
+[103 normal] Live build-versus-buy assessment of the PE-focused vendor: side-by-side comparison of what AGR can stand up internally versus what the vendor delivers, with criteria the team agrees on up front
+[104 normal] Ad-hoc Slack or Teams availability when teammates encounter obstacles
+[105 normal] A resource library of prompts, skills, and patterns tailored to AGR's four-vertical model and existing tooling (CapIQ, Outlook, SharePoint, Claude, ChatGPT)
+[106 normal] 
+[107 Heading 2] Phase 3: Implementation Planning & Roadmap Development (Week 6)
+[108 normal] Format: 90-minute strategic session, virtual
+[109 normal] Session Objectives
+[110 normal] Synthesize what worked and what didn't across the four verticals during Weeks 2-5
+[111 normal] Prioritize the top 7-10 opportunities for immediate implementation, with named owners on the AGR team
+[112 normal] Develop a 30/60/90-day roadmap with clear success metrics for each priority opportunity
+[113 normal] Resolve the build-versus-buy decision on the PE-focused vendor with explicit criteria and a clear answer
+[114 normal] Discuss the path from internal team capability to portfolio-company use cases over time, if and when that becomes a priority
+[115 Heading 1] Final Deliverable: AI Action Plan
+[116 normal] Strategic document including:
+[117 normal] Ready-to-Deploy Playbook
+[118 normal] Workflow enhancements for AGR's daily work using browser-based AI tools and desktop integrations
+[119 normal] Tested prompts for AGR-specific work: call reports, NDA review, model-building, board meeting prep, competitive analysis
+[120 normal] Step-by-step implementation guides for the priority applications across the four verticals
+[121 normal] ROI measurement frameworks for tracking efficiency and quality gains
+[122 normal] Strategic Roadmap
+[123 normal] 30/60/90-day implementation timeline for the immediate opportunities
+[124 normal] 12-month vision for AGR's GenAI integration, including the path to higher-stakes agentic work in execution and portfolio management
+[125 normal] Build-versus-buy decision criteria, resource requirements, and budget considerations
+[126 normal] Integration plan with existing tooling (CapIQ, Outlook, SharePoint, Claude, ChatGPT)
+[127 normal] Governance & Operations
+[128 normal] AI usage policies appropriate for an institutional investor handling sensitive deal and portfolio information
+[129 normal] Data-sharing and confidentiality guidelines for working with LLM vendors and PE-focused tools
+[130 normal] Quality-assurance processes for AI-enhanced deliverables (call reports, diligence models, IR materials)
+[131 normal] Risk-management protocols for the data types AGR handles (deal documents, portfolio financials, LP information)
+[132 normal] Continuous-improvement structures so the roadmap stays current as model capabilities evolve
+[133 normal] Included in Engagement
+[134 normal] All training sessions and materials
+[135 normal] Recorded sessions with full transcripts
+[136 normal] Ad-hoc support throughout the engagement period via Slack or Teams
+[137 normal] The AI Action Plan
+[138 normal] 30-day post-engagement email support for implementation questions
+[139 Heading 1] Time Commitment
+[140 normal] We know AGR's team is lean, decentralized, and balancing portfolio work with active partner travel. Here's the week-by-week breakdown so you can plan accordingly:
+[141 normal] Total structured time is approximately 6.5 hours over six weeks, plus 15 to 30 minutes daily of applying GenAI to real work during Weeks 2 through 5. The engagement can stretch to seven or eight weeks if it needs to accommodate Roundtable follow-up, Berkshire week, or other partner-facing commitments, though we find momentum helps the learning stick.
+[142 normal] The 15-to-30-minutes-a-day component is deliberately tied to real work AGR is already doing: live call reports, actual NDA reviews, the next investor update, a deck the team is genuinely under pressure to produce. The point is not to practice. The point is to make AI useful inside the work that's already on the team's calendar so the gains compound right away and the habits hold after we are gone.
+[143 Heading 1] Where This Could Go
+[144 normal] The Kickstart is designed to leave AGR in control of the next move. Two paths are common from here, and both are optional.
+[145 Heading 2] Extending Capability Across the Team
+[146 normal] Once the core AGR team has built fluency, several natural extensions are possible without requiring a follow-on contract.
+[147 normal] Extending the playbook and prompt library to teammates outside the initial cohort, including new hires and summer builders
+[148 normal] Recording the Week 1 session and inviting additional teammates to office hours as low-cost ways to broaden reach across the team
+[149 normal] Running focused follow-on engagements for specific verticals (origination or execution) once the in-house builder and MBA summer hire have proven the model with the core team
+[150 normal] If the team eventually wants to extend GenAI capabilities into the 22 portfolio partnerships, that becomes a different conversation about what AGR is comfortable supporting and where each portfolio company is in its own AI journey. We're happy to discuss a portfolio-wide path when AGR is ready, but the Kickstart itself is scoped to the AGR team.
+[151 Heading 2] Ongoing Advisory Service
+[152 normal] The AI field moves faster than any organization can track internally. After the Kickstart, many clients find value in an ongoing advisory service called Pulse, where Remix continues to monitor the field on their behalf, filters signals from noise, and helps evaluate new capabilities as they emerge. A core part of Pulse is that we refresh your AI Action Plan every quarter; the refreshed plan becomes the focus of our quarterly strategy sessions, ensuring your roadmap stays current as model capabilities evolve. We're happy to discuss this if it's of interest.
+[153 Heading 2] Investment and Terms
+
+[154 normal] Total Investment: $######
+[155 normal] Payment Structure:
+[156 normal] 50% advance payment upon SOW execution: $######
+[157 normal] 50% upon delivery and Client acceptance of final deliverables: $###### (Net 15)
+[158 normal] 
+Termination:
+If Client elects to terminate this fully executed SOW for convenience after execution, Client remains liable for the first payment representing 50% of the Investment.
+[159 normal] 
+Timing:
+This fee structure is valid through Q3 2026, with flexibility to start whenever works best for your team.
+[160 normal] 
+[161 Heading 3] As agreed by the parties:
+[162 normal] 
+
+Remix Partners
+
+Signature: 	
+
+[163 normal] Name: 		Jason Rubinstein
+
+[164 normal] Title: 		Partner & Co-Founder
+[165 normal] 
+[166 normal] 
+AGR Partners
+
+Signature: 	
+
+[167 normal] Name: 		
+[168 Heading 2] Title: 		
+
+=== TABLE 0 ===
+[T0R0C0] Week
+[T0R0C1] Time Commitment
+[T0R0C2] Activity
+[T0R1C0] Week 1
+[T0R1C1] 3 hours (half-day)
+[T0R1C2] Foundation workshop, in-person in Chicago
+[T0R2C0] Week 2
+[T0R2C1] + 1 hour
+[T0R2C2] Prompt and context engineering training
+[T0R3C0] Weeks 2-5
+[T0R3C1] 15-30 min/day
+[T0R3C2] Guided experimentation in daily workflows
+[T0R4C0] Week 3 or 4
+[T0R4C1] + 1 hour
+[T0R4C2] Office hours: AGR-led sharing and Q&A
+[T0R5C0] Week 6
+[T0R5C1] 90 minutes
+[T0R5C2] Strategic roadmapping and prioritization
