@@ -204,3 +204,29 @@ After that point, Future Sessions 3-6 are polish and convenience, not blocking.
 ## Summary
 
 The architecture is in place. The framework is shippable. The next sessions are about exercising it against real data, building the runtime infrastructure, and cleaning the long-tail polish. The skill is now in a state where each future session moves us forward without re-fighting yesterday's bugs.
+
+---
+
+## Update 2026-05-13: Wholestone-triggered structural fixes (commit ed7881d)
+
+Four bugs surfaced in the Wholestone Prestage 2026-05-12 proposal:
+
+1. **MSA-body pages rendered without footers** in Google Docs. Root cause: the SOW template had a multi-section structure where the first sectPr had no default `<w:footerReference>` AND Google Docs treated some inline-sectPr-defined sections inconsistently. **Fix:** `scripts/fix_templates_2026_05_13.py` collapses the SOW template to a single section with one trailing sectPr that carries the default footerReference. Pulse template was already clean.
+
+2. **Page numbering reset at the MSA-to-SOW boundary.** Justin's hard requirement: numbering must run continuously start-to-finish. **Fix:** removed all `<w:pgNumType w:start="1"/>` resets; single section naturally produces continuous 1, 2, 3, ... numbering.
+
+3. **No reliable page break before "Statement of Work"** — proposals relied on content length pushing the SOW heading onto a new page. **Fix:** applied `<w:pageBreakBefore/>` to the SOW heading paragraph in the template; defense-in-depth.
+
+4. **Executive Summary and Background & Context restated the same operational facts** six different ways (Wholestone Exec hit 208 words, six facts also appeared verbatim in Background). **Fix:** tightened length targets (Exec 130-150 max 160, Background 250-400 max 450), added a categorical division-of-labor rule (operational facts → Background only; Exec references by frame), added an anti-duplication scan to Agent 1's self-check pass. Applied to `offers/kickstart.md`, `offers/aiba.md`, and Agent 1 persona.
+
+**verify_proposal.py upgrades enforce all four at build time:**
+- **Check 0g extended:** verifies BOTH the MSA-internal sig block AND the SOW sig block carry the MSA preamble's core legal name (tolerates "(also known as ...)" / "(d/b/a ...)" parenthetical clauses).
+- **Check 0i upgraded to XML-level:** every non-continuous sectPr must have a default `<w:footerReference>` pointing at a footer with REMIX PARTNERS text; warns on the "first footerRef without titlePg" trap.
+- **New Check 0k:** page break / `<w:pageBreakBefore/>` / nextPage section break must immediately precede the "Statement of Work" heading.
+- **New Check 0l:** only the first sectPr may carry `<w:pgNumType w:start>`; subsequent resets break MSA→SOW continuity.
+
+**End-to-end verified:** rendered fixed template via Drive PDF export; pages 1-7 all carry the standard footer; numbering runs 1, 2, 3, 4, 5, 6, 7 continuously; "Statement of Work" lands on its own page (page 7).
+
+**What this closes from the original plan:** the "first-real-client validation surfaces drift" expectation in Future Session 1. Wholestone WAS that validation; the drift was real and is now fixed in both the template and the build-time invariants.
+
+**What's still open from the original plan:** Future Sessions 2 (Agent 3 runtime helpers), 3 (template placeholder text cleanup), 4 (kickstart_cohort offer), 5 (examples refresh), 6 (RemixOS schema migration). None block running the skill against new clients.
