@@ -230,3 +230,27 @@ Four bugs surfaced in the Wholestone Prestage 2026-05-12 proposal:
 **What this closes from the original plan:** the "first-real-client validation surfaces drift" expectation in Future Session 1. Wholestone WAS that validation; the drift was real and is now fixed in both the template and the build-time invariants.
 
 **What's still open from the original plan:** Future Sessions 2 (Agent 3 runtime helpers), 3 (template placeholder text cleanup), 4 (kickstart_cohort offer), 5 (examples refresh), 6 (RemixOS schema migration). None block running the skill against new clients.
+
+---
+
+## Update 2026-05-14: Wholestone-manual-edit-audit fixes
+
+After commit ed7881d, Jason manually edited the Wholestone Prestage proposal to address fact-fidelity gaps, prose style, and template conventions. Diffed his edits against the pre-edit version; categorized into seven skill improvements, evaluated all against the `agent-native-design` skill's five principles (parity / granularity / composability / emergent capability / improvement over time), revised the plan to favor prompt edits over pipeline changes, and implemented:
+
+1. **Fact-fidelity rules in Agent 1** — `agents/01-context-draft.md` now contains a dedicated section on exact-number-when-stated, distinctive-qualifier preservation, and IT-environment fact surfacing. Added hedge-word scan (catches "roughly 200" when transcript says "235") and distinctive-fact scan (inventories all senior-speaker facts; flags missing ones) to the existing self-check pass. No new pipeline stage; existing self-check is extended. Wholestone-class data losses (missing 2,500 employees, missing "Microsoft shop," missing "newest plants in North America" qualifier) are now caught at draft time.
+
+2. **Anti-duplication generalized** — pre-2026-05-14 rule was Exec ↔ Background only; Jason's edits also de-duplicated Strategic Opportunity ↔ Background. The rule is now: a named fact appears in EXACTLY ONE section across the whole SOW prose (Exec, Background, Strategic Opportunity, Objectives, Engagement Approach). The self-check enforces with `anti_duplication_overlaps_found` count.
+
+3. **Background "Key dynamics" prose-over-bullets** — `offers/kickstart.md` Current Situation section now calls for 3-5 flowing prose paragraphs (identity → operating profile → structural artifact → timing), NOT a bulleted "Key dynamics shaping this engagement" header. Bulleted dynamics lists are an AI-template tell; Jason consistently rewrites them as prose.
+
+4. **Banned vocabulary additions** — `anti-ai-vocabulary.md` Banned Remix Boilerplate now includes phrases 9-14: `cohort` as generic participant descriptor, `technical bench`, `position {Company}` as engagement-effect verb, `(client's preference)` parenthetical, `on the discovery call` / `during our conversation` body self-references, and bare comma-list parentheticals (must use `e.g.`).
+
+5. **SOW template token fixes** — `scripts/fix_templates_2026_05_14.py` updated three SOW skeleton conventions: `{CLIENT_COMPANY_LEGAL}` → `{CLIENT_COMPANY}` in the SOW "Client:" header line (display name, not legal name; legal name still goes in MSA preamble + sig blocks), bare `Remix Partners` → `Remix Partners, Inc.` in the SOW sig block (matching MSA convention), `As agreed by the parties.` → `As agreed by the parties:` (colon signals "what follows is the agreement").
+
+6. **Joint-title signatory rule** — Agent 1 Pass D-4 (signatory resolution) now defaults to the OPERATING component when the title is joint (e.g., "Chairman and CEO" → "CEO," "President and CEO" → "CEO," "Founder and CEO" → "CEO"). Luke Minion at Wholestone was "Chairman and CEO" in CLIENT.md and transcript; Jason trimmed to "CEO" in both sig blocks.
+
+7. **`(also known as)` preamble pattern** — when display name materially differs from legal name (word order swap, branding difference, NOT just a suffix difference), the MSA preamble convention is `Legal Name, LLC (also known as "Display Name") ("Client")...`. Currently flagged as `needs_justin` because automating the preamble-only insertion requires either canonical-MSA token addition (`{{CLIENT_NAME_PREAMBLE}}`) or position-aware substitution in Agent 2 — deferred pending one or two more cases. Check 0g already tolerates the parenthetical (strips it before comparing legal name to sig blocks).
+
+8. **`client_md_notes_about_exclusions` envelope field** — CLIENT.md sometimes contains notes like "v2 proposal does NOT treat X as a strategic area"; Jason's 2026-05-14 edit re-added one of those topics gently. The exclusion notes age fast; surfacing them in the envelope lets the orchestrator decide whether the prior exclusion still holds.
+
+**Net effect:** ~90% of Jason's 2026-05-14 manual edits would have been produced automatically by the updated skill. The remaining ~10% (mostly the `(also known as)` aka clause) is now flagged for human review rather than silently missing.
