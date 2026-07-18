@@ -55,6 +55,20 @@ SFT teaches behavior, not facts. Dumping the vault in raw teaches the model to *
 - **Financial internals:** Mercury balances, comp targets, exit-landscape material. The model doesn't need it and it must never leak.
 - **Client confidentiality decision (Justin's call before Inkling run, not needed for pilot):** if the tuned model stays *internal-only*, client engagement data is in-scope. If we ever offer a tuned model *to* clients, every other client's data comes out first. Recommend: pilot as internal-only, everything in except the exclusions above.
 
+## 4b. PII scrub flow (runs locally — transcripts never leave our hardware)
+
+Tooling: **OpenAI's gpt-oss open-weights models** (Apache 2.0, released Aug 2025; still OpenAI's current open family as of July 2026). Two members matter here:
+- **gpt-oss-20b** — general reasoning model, ~14GB (MXFP4), runs on Kirby's Mac Mini via Ollama alongside the existing gemma4 stack. Does the actual redaction rewrites.
+- **gpt-oss-safeguard-20b** — the safety-classifier variant: give it a written policy at inference time and it reasons over the text and labels violations, with visible chain-of-thought. Used as the *verifier*, not the rewriter (it classifies; it doesn't rewrite).
+
+Pipeline (every transcript, before anything touches pair-generation):
+1. **Redact (gpt-oss-20b, local):** rewrite each transcript against a written PII policy — personal names → stable pseudonyms/role tags ("[CEO-ClientA]", consistent within and across that client's files so dialogue still reads), strip emails/phones/addresses, health details, individual comp, kids/family mentions. Company names KEPT for internal-only training (revisit if model ever goes client-facing).
+2. **Verify (gpt-oss-safeguard-20b, local):** second pass with the same policy classifies each scrubbed chunk pass/fail and flags residual PII; failures loop back to step 1.
+3. **Spot-check:** Stafford reviews a random 10% sample + every flagged-then-fixed file; Justin sees a one-page summary of what categories were removed.
+4. Scrubbed corpus is what Tracks A-C consume. Raw transcripts never upload to Tinker.
+
+Why local matters: the entire point of scrubbing is that client-confidential text shouldn't transit a third-party API *before* it's clean. gpt-oss on the Mini keeps the dirty→clean step inside the tailnet at zero marginal cost.
+
 ## 5. Sizing & cost
 
 - Target: **3,000-6,000 pairs**, avg ~1-2K tokens each → 5-10M tokens/epoch, 2-3 epochs.
@@ -70,12 +84,13 @@ SFT teaches behavior, not facts. Dumping the vault in raw teaches the model to *
 
 ## 7. Build order
 
-1. Run client-question-harvest → question corpus (exists as a skill, needs a run).
-2. Transcript advisory-move extraction (one LLM pass, ~205 files).
-3. Sent-mail sampling + context reconstruction (gws, ~500-1000 emails).
-4. Partner-edit pairs from proposal-writer judge corpus (already structured).
-5. Synthesize Track A/D fills, PII scrub pass, assemble JSONL, split train/eval.
-6. Tinker pilot on Qwen3-8B → eval → go/no-go on Inkling.
+1. Stand up gpt-oss-20b + gpt-oss-safeguard-20b on the Mini (Ollama); write the PII policy; run the scrub flow over all 205 transcripts (§4b).
+2. Run client-question-harvest → question corpus (exists as a skill; point it at scrubbed transcripts).
+3. Transcript advisory-move extraction (one LLM pass over the scrubbed corpus).
+4. Sent-mail sampling + context reconstruction (gws, ~500-1000 emails).
+5. Partner-edit pairs from proposal-writer judge corpus (already structured).
+6. Synthesize Track A/D fills, PII scrub pass, assemble JSONL, split train/eval.
+7. Tinker pilot on Qwen3-8B → eval → go/no-go on Inkling.
 
 ## Sources for pricing claims
 - https://tinker-docs.thinkingmachines.ai/tinker/models/ (Inkling $1.87/$4.68/$5.61 per M at 50% discount; $0.10/GB/mo checkpoints)
