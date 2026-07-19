@@ -1,5 +1,21 @@
 # Remix Tuning Experiment — Training Set Spec
 
+> **STATUS: PARKED 2026-07-19 — spec complete, no build started. Resume whenever.**
+> Nothing is running, nothing is half-built, no money spent. This doc is the whole state.
+>
+> **Start here next session:** §8 step 1 — stand up gpt-oss-20b + gpt-oss-safeguard-20b on the
+> Mini and wire `privacy_lint.py` as the gate, then scrub transcripts/email/answer-key. That one
+> step unblocks everything downstream and is pure local setup (no spend, no external calls).
+>
+> **Decisions already made (don't relitigate):** Tinker over self-hosting; small-model dress
+> rehearsal before any Inkling spend; reuse the vault's `eval/rubric.md` rather than writing an
+> eval; vault-derived training data comes only from `dist/public-corpus/`.
+>
+> **One open question for Justin (§5):** scrub the answer key to the same bar as everything else?
+> Recommendation is yes. Not blocking — step 1 can proceed either way.
+>
+> **Total exposure to reach go/no-go:** ~$30 and one grading session from Justin.
+
 **Date:** 2026-07-18 (**revised 2026-07-19** after auditing the knowledge-vault repo)
 **Context:** Justin asked what it would take to safely experiment with tuning Inkling (Thinking Machines' 975B open-weights MoE) for Remix. Path: Tinker (managed fine-tuning, per-token billing). Validate on a small model (Qwen3-8B, ~$20-40) before spending on Inkling (~$150-500 at current 50% discount).
 **Revision note:** v1 of this spec independently re-specced a question corpus, a PII scrub, and an eval harness. **All three already exist in `~/remix-knowledge-vault/`, more mature than what was proposed.** This version deletes the duplicated work and re-aims the experiment at the gap the vault's own eval data says is actually open.
