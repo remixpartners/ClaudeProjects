@@ -254,3 +254,13 @@ After commit ed7881d, Jason manually edited the Wholestone Prestage proposal to 
 8. **`client_md_notes_about_exclusions` envelope field** — CLIENT.md sometimes contains notes like "v2 proposal does NOT treat X as a strategic area"; Jason's 2026-05-14 edit re-added one of those topics gently. The exclusion notes age fast; surfacing them in the envelope lets the orchestrator decide whether the prior exclusion still holds.
 
 **Net effect:** ~90% of Jason's 2026-05-14 manual edits would have been produced automatically by the updated skill. The remaining ~10% (mostly the `(also known as)` aka clause) is now flagged for human review rather than silently missing.
+
+---
+
+## Update 2026-08-04: Hallador DRAFTS contamination audit (not a pipeline bug)
+
+A file in `Hallador Energy/DRAFTS/` named `Hallador-Energy-Kickstart-SOW-2026-06-30.docx` turned out to be **Teays River's January 2026 Kickstart proposal with names find-replaced** ("Teays River Investments" -> "Hallador Energy", "Zarrell Gray" -> "Matthew Switzer"); its whole SOW body describes Teays' food-and-ag holding company, not Hallador's coal/power business. Telltale: broken possessive "Hallador Energy' priority areas". Created 2026-06-30 12:40pm — ~6 hours **before** the real proposal-writer run that day (which passed a two-round judge 0/0/0 and produced the correct, later-signed proposal). So this was a manual/ad-hoc find-replace stand-in from the old January-era template, not an output of the current skill; no skill changes needed.
+
+Actions taken: file quarantined to `DRAFTS/QUARANTINE - DO NOT USE/` with a warning-prefixed filename and README; Hallador CLIENT.md timeline/inventory updated; cloud state verified via Drive API. Fleet-wide sweep: extracted Background/Current Situation from all 165 MSA/SOW/proposal docx across Clients & Partners and judged each against its folder's client, plus a phrase-fingerprint grep across all 443 docx — **no other cross-client contamination found** (the only other "organic dairy" holding co, Gibby Group, has its own correct text). "Square Dance" / "stands at a unique strategic inflection point" hits across Jan-Mar 2026 proposals are shared template rhetoric, already banned in the current skill vocabulary, not contamination.
+
+Watch-for going forward: find-replace reuse of an old client proposal leaves the source client's business facts intact under the new client's name — undetectable by name-grep, only by reading the Background against the folder's client. If a quick stand-in doc is ever needed pre-skill-run, it should never be saved into the client's DRAFTS folder.
