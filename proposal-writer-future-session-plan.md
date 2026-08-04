@@ -255,10 +255,3 @@ After commit ed7881d, Jason manually edited the Wholestone Prestage proposal to 
 
 **Net effect:** ~90% of Jason's 2026-05-14 manual edits would have been produced automatically by the updated skill. The remaining ~10% (mostly the `(also known as)` aka clause) is now flagged for human review rather than silently missing.
 
----
-
-## Update 2026-08-04: cross-client contamination sweep (clean; one stray artifact removed)
-
-A stray file in Hallador Energy/DRAFTS turned out to be a January-era proposal for a different client with the company and contact names find-replaced - a quick stand-in saved hours before the real proposal-writer run that day, never cleaned up. At Justin's direction it was deleted outright (no quarantine residue in the client folder). The real Hallador drafts and the signed contract were verified correct. Fleet-wide sweep: Background/Current Situation of all 165 MSA/SOW/proposal docx judged against the client whose folder they sit in, plus a phrase-fingerprint grep across all 443 client docx - no other cross-client contamination. Not an output of the current skill; no skill changes needed.
-
-Watch-for that stays relevant: find-replace reuse of an old client proposal leaves the source client's business facts intact under the new client's name - undetectable by name-grep, only by reading the Background against the folder's client. Never save an ad-hoc stand-in doc into a client's DRAFTS folder.
