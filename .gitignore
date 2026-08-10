@@ -1,4 +1,3 @@
-
-# Dolt database files (added by bd init)
-.dolt/
-*.db
+.claude/
+.preview/
+.DS_Store
