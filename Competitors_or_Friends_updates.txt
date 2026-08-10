@@ -1,0 +1,23 @@
+## Competitors or Friends / README.md additions:
+
+### 1. Add RapidCanvas row to quick reference table (insert after Pragmatic AI Labs, before "Low Code Cookbook"):
+
+| RapidCanvas | Hybrid AI services+platform, enterprise focus | Adjacent (different buyer, platform vs consulting) | Mid (potential co-sell if Remix expands upmarket) | High (validates hybrid AI model, alternative architecture) |
+
+### 2. Add RapidCanvas to status section (after "Pragmatic AI Labs" entry):
+
+**RapidCanvas (added 2026-07-24):** Sourced from WebSearch + Crunchbase + PitchBook. Founded 2021 Austin TX; co-founders Rahul Pangam (CEO, ex-VP Risk Strategy PayPal, ex-Google Trust & Safety) + Uttam Phalnikar (CTO). Prior company: Simility (AI risk management platform, acquired by PayPal 2017). **Funding: $47.4M total across 3 rounds; Series A $16M led by Peak XV Partners with Titanium Ventures, Accel, Valley Capital Partners.** Headcount: ~66. **Product:** Subscription SaaS hybrid approach combining agentic AI with human expertise; Enterprise Context Engine + platform components (Design, Connect, Launch, Govern). **Customers:** PayPal, Keysight, Toppan Packaging, AutoFi, MTE-Thomson. **Industries:** manufacturing, financial services, retail, energy, utilities, higher ed, construction, supply chain. **Jason connection:** Jason knows someone who works at RapidCanvas; exact contact/relationship TBD—verify before outreach.
+
+**Why RapidCanvas matters:** NOT a direct competitor (RapidCanvas targets enterprise with platform/subscription; Remix targets SMBs with consulting-first + channels). BUT strategic watch: validates market appetite for hybrid AI (agentic + human expertise) + platform positioning + subscription pricing. If Remix shifts upmarket or builds platform, RapidCanvas is a direct comp / potential acquirer target. If Remix stays SMB + consulting + channels (Lyra, We Are Rosie), RapidCanvas is a parallel play (different buyer, different model). **Watchpoint:** $16M Series A suggests path to Series B or acquisition—monitor for funding announcements or acquisition rumors.
+
+**Data quality:** Funding, headcount, and founding dates sourced from Crunchbase/PitchBook + LinkedIn; company statements unaudited. Jason connection unverified.
+
+---
+
+### 3. Update status section header note (around line 53-62):
+
+Add RapidCanvas to the note:
+
+"**Update 2026-07-24 — [RapidCanvas](./RapidCanvas.md) added (brings folder to 24).** Sourced from WebSearch + Crunchbase/PitchBook. Founding facts ($47.4M funded, 66 people, Series A $16M Peak XV), co-founder backgrounds, and customer roster are solid. Jason connection unverified—confirm exact relationship before outreach. Not PitchBook/Crunchbase headcount-verified for real-time employee count; treat as of-date snapshot. Strategic relevance: validates hybrid AI + subscription + platform model; parallel-play archetype (enterprise focus vs Remix SMB focus); potential acquirer target if seeking platform + hybrid AI capability. One open item: exact nature of Jason connection."
+
+---

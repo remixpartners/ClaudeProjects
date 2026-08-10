@@ -1,0 +1,47 @@
+## Crystallized patterns entry (add to EXIT.md after line 254):
+
+---
+
+**2026-07-24 — Lyra Technology Group: Channel/Distribution Archetype & Demand-Side Validation**
+
+Lyra Technology Group is a PE-backed MSP roll-up ($1B ARR, 120 MSPs, 16K SMBs, Evergreen Services Group / Alpine Investors permanent-hold structure) that owns customer relationships but lacks AI consulting and implementation capability. They launched an 8-opco pilot (Trailblazer) deploying forward-deployed implementation pairs on-site at SMB customers and came to Remix seeking "river guide" advisory—a playbook that scales across decentralized opcos for 2-3 month SMB engagement cycles.
+
+This engagement is strategically significant for five reasons:
+
+1. **Demand-side proof of the SMB moat thesis.** Lyra is sophisticated (PE-backed, permanent-hold structure, $1B ARR), well-capitalized, and has 16,000 customer relationships. Yet they cannot solve AI deployment for those customers without outside help. They are structurally blind to the strategy/design layer that sits between customer relationships (layer 1) and implementation (layer 3). This is NOT a gap that Accenture or BCG can fill profitably at SMB scale (their $500K embedded roles don't pencil). Lyra's inability to solve this alone validates the thesis: a durable moat exists in the AI strategy/design layer at SMB scale.
+
+2. **Recurring revenue inflection at a smart buyer.** Lyra pivoted mid-negotiation from a one-time $35K Kickstart to an opt-in **"scouts" monthly subscription model**: monthly fee, annual renewal, opco-level opt-in. This is the exact threshold Brad Morehead (Shore Capital, permanent-hold PE) named as the inflection point from "interesting" to "investable"—a recurring-revenue engine that survives market swings. Lyra is now applying it at scale across 120 opcos. If even 30-50% opt in to an ongoing partnership, that's 36-60 recurring customers renewing annually. This is proof that the financial model works with a smart buyer who understands decade-scale economics.
+
+3. **Three-layer map instantiation in the wild.** Remix's layer-2 thesis (2026-07-02 entry, "Under-ownership of the middle layer") posits that strategy/design is under-owned because it requires executive judgment that scales poorly and sits structurally between layer-1 (customer relationships) and layer-3 (implementation). Lyra's Trailblazer program is the live instantiation: Lyra owns layer 1 (customer relationships via 120 MSPs, ongoing support), Remix provides layer 2 (AI strategy, discovery methodology, ROI framework, governance model), and 8 opcos deploy layer 3 (FDEs at SMB customer sites, building projects). Lyra is the perfect customer archetype: strong layer-1 coverage (distribution), layer-3 capacity (technical hiring program), but structural blindness to layer 2 (strategy/judgment).
+
+4. **Channel/distribution partner, not acquisition.** Lyra is distinct from other capital structures: Excelsior (client-led capitalization, one big client), Shore (capital partner, portfolio of Remix clients), We Are Rosie (labor arbitrage, embed consultants). Lyra is a **channel/distribution partner**: Remix provides IP and advisory capability; Lyra sells it through their MSP network to their own SMB customers. Lyra's opcos execute the engagements. Remix stays advisory, guards methodology, measures outcomes. This is a third exit archetype: not "acquire Remix and hire the team," but "be the sales and delivery engine for Remix's IP in a vertically-integrated partner." Implies a recurring-revenue partnership structure, not a transaction.
+
+5. **Validates and expands the capital map.** Before Lyra, the capital map identified Shore (permanent-hold PE, named recurring revenue as the "investable" variable). Lyra adds Evergreen/Alpine as the **second permanent-hold PE name in the SMB market** and confirms the broader thesis: PE-backed platforms (especially permanent-hold structures that optimize for decade-scale economics) are the natural partners for layer-2 advisory. They already own customer relationships and have the time horizon to build a recurring-revenue AI advisory offering without pressure to acquire or flip.
+
+**Watchpoints:** (1) Opco autonomy and renewal dynamics—each opco has a local CEO; will they renew if initial outcomes aren't visible? (2) Competitive risk—if Lyra proves the model, Accenture/BCG will notice and enter. (3) Execution risk—must prove ROI within 90 days to sustain subsequent renewals. (4) Geography/time zone friction for 2 of 8 opcos (Australia, UK) that are remote; may require async content.
+
+**Commercial structure (as of 2026-07-21):** Phase 1 = Sept 10-11 Chicago Kickstart to Trailblazer pairs + opco leaders ($35K, 50/50 execution/delivery). Phase 2 (proposed) = opt-in monthly subscription with annual renewal and opco-level opt-in (pricing TBD). Phase 3 (future) = revenue-share on larger projects if opcos identify $500K+ opportunities for their SMB customers.
+
+**Cross-references:** Pattern 2 (2026-05-04, SMB white-space moat), Pattern 3 addendum (2026-07-02, three-layer map + unit-economics wall), Excelsior archetype (2026-05-22), recurring revenue thesis (2026-07-02 addendum). See companion file: Lyra Technology Group.md.
+
+---
+
+## Update to README / Folder Structure (top of EXIT.md):
+
+Add to "What's in this folder" section (around line 13-24):
+- `Lyra Technology Group.md` - PE-backed MSP roll-up, channel/distribution partner, demand-side validation of SMB moat thesis, recurring-revenue partnership model
+
+Add to "Companion artifacts" section (around line 483-493):
+- Lyra Technology Group.md (channel/distribution archetype, recurring-revenue partnership, SMB moat proof)
+
+---
+
+## Competitors or Friends / RapidCanvas addition:
+
+Add to quick reference table (line ~35):
+| RapidCanvas | Hybrid AI services+platform, enterprise focus | Adjacent (different buyer, platform vs consulting) | Mid (potential co-sell if expanding downmarket) | High (hybrid AI validation, alternative platform model) |
+
+Add to status section (after Pragmatic AI Labs entry):
+- **RapidCanvas (added 2026-07-24):** Sourced from WebSearch, Crunchbase, PitchBook. $47.4M funded (Series A $16M Peak XV), ~66 people, 2021 Austin TX founding (Pangam ex-PayPal/Google + Phalnikar CTO). Hybrid agentic AI + platform + long-term partner model, customers in manufacturing/financial/supply chain (PayPal, Keysight, Toppan, AutoFi, MTE-Thomson). Jason connection: knows someone at RapidCanvas (verify exact contact for outreach). Not a direct competitor (enterprise focus vs Remix SMB focus, platform/subscription vs consulting-first model) but strategic watch: validates market appetite for hybrid AI + subscription; parallel play on different buyer segment; potential acquirer target if seeking platform + hybrid AI capability.
+
+---
