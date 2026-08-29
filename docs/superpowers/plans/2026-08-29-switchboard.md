@@ -1868,6 +1868,321 @@ git push -u origin switchboard-skill && gh pr create --fill && gh pr merge --squ
 
 ---
 
+### Task 11: OpenAI-dialect lane adapter (Grok, and OpenRouter for free)
+
+Added 2026-08-29 after Justin: "I totally forgot that I have a Grok account."
+
+Grok does not fit any existing lane kind. The three we have are Anthropic-dialect HTTP
+(`gateway`), Ollama-native HTTP (`ollama`), and a CLI (`codex`). xAI speaks the OpenAI
+dialect - `POST {base}/chat/completions` with `Authorization: Bearer` - so this task adds
+a fourth kind, `openai`, as a generic adapter for ANY OpenAI-compatible endpoint. Grok is
+its first tenant; **OpenRouter then costs one config block, no code**, which retires the
+"OpenRouter is out of scope for v1" line in the spec.
+
+Brain mode only, same as `ollama`. Hands-mode Grok is deliberately not attempted here:
+`codex exec --local-provider` accepts only `lmstudio` and `ollama` (verified 2026-08-29),
+so hosting Grok in a coding harness needs separate work. Brain mode is where a second
+opinion lives anyway.
+
+**Files:**
+- Create: `~/remix-switchboard/switchboard/lanes/openai.py`
+- Modify: `~/remix-switchboard/switchboard/config.py` - add `"openai"` to `KINDS`
+- Modify: `~/remix-switchboard/switchboard/lanes/__init__.py` - add `"openai"` to the `adapter_for` map
+- Modify: `~/remix-switchboard/switchboard/health.py` - add an `openai` branch
+- Modify: `~/remix-switchboard/config/lanes.example.yaml` - add the `grok` lane
+- Modify: `~/remix-switchboard/config/rubric.md` - add a Grok routing line
+- Test: `~/remix-switchboard/tests/test_lane_openai.py`
+- Test: `~/remix-switchboard/tests/test_config.py` - one added test
+- Test: `~/remix-switchboard/tests/test_health.py` - one added test
+
+**Interfaces:**
+- Consumes: `LaneResult` from `switchboard.lanes`; `Lane` from `switchboard.config`.
+- Produces: `run(lane, brief, *, mode, leash, cwd, timeout, transcript_path) -> LaneResult`,
+  identical in signature to the other three adapters. Module-level `_post_json(url, payload, headers, timeout) -> dict`
+  so tests can monkeypatch it without touching the network.
+
+**Prerequisite:** an xAI API key at `~/.config/xai/api_key` (chmod 600), obtained from
+console.x.ai. A grok.com or X Premium consumer subscription does NOT include API access
+and cannot drive this lane. If the key file is absent, every part of this task still
+builds and its tests still pass - only Step 7's live check is skipped, and
+`sb lanes --check` reports `DOWN grok key file missing`, which is the intended explicit
+failure state, not a bug.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/test_lane_openai.py`:
+
+```python
+from pathlib import Path
+from switchboard.config import Lane
+from switchboard.profile import Leash
+from switchboard.lanes import openai as oa
+
+def _lane(tmp_path, key=True):
+    k = None
+    if key:
+        k = tmp_path / "key"; k.write_text("xai-SEKRIT\n")
+    return Lane(name="grok", kind="openai", model="grok-4", modes=["brain"],
+                context_tokens=256000, max_concurrency=2, timeout_default=60,
+                base_url="https://api.x.ai/v1", api_key_path=k,
+                profile_dir=tmp_path / "prof")
+
+def _run(tmp_path, lane=None, **kw):
+    kw.setdefault("mode", "brain"); kw.setdefault("leash", Leash())
+    kw.setdefault("cwd", tmp_path); kw.setdefault("timeout", 30)
+    kw.setdefault("transcript_path", tmp_path / "t.log")
+    return oa.run(lane or _lane(tmp_path), "why is the sky blue", **kw)
+
+def test_posts_to_chat_completions_with_bearer_auth(tmp_path, monkeypatch):
+    seen = {}
+    def fake(url, payload, headers, timeout):
+        seen.update(url=url, payload=payload, headers=headers)
+        return {"choices": [{"message": {"content": "rayleigh scattering"}}]}
+    monkeypatch.setattr(oa, "_post_json", fake)
+    res = _run(tmp_path)
+    assert res.ok and res.output == "rayleigh scattering"
+    assert seen["url"] == "https://api.x.ai/v1/chat/completions"
+    assert seen["headers"]["Authorization"] == "Bearer xai-SEKRIT"
+    assert seen["payload"]["model"] == "grok-4"
+    assert seen["payload"]["stream"] is False
+    assert seen["payload"]["messages"] == [{"role": "user", "content": "why is the sky blue"}]
+
+def test_hands_mode_is_refused_with_a_clear_message(tmp_path):
+    res = _run(tmp_path, mode="hands")
+    assert not res.ok and "brain" in res.error and "grok" in res.error
+
+def test_missing_key_file_fails_before_any_request(tmp_path, monkeypatch):
+    def boom(*a, **k):
+        raise AssertionError("must not reach the network without a key")
+    monkeypatch.setattr(oa, "_post_json", boom)
+    res = _run(tmp_path, lane=_lane(tmp_path, key=False))
+    assert not res.ok and "api key" in res.error.lower()
+
+def test_connection_failure_is_explicit_never_silent(tmp_path, monkeypatch):
+    def boom(url, payload, headers, timeout):
+        raise OSError("connection refused")
+    monkeypatch.setattr(oa, "_post_json", boom)
+    res = _run(tmp_path)
+    assert not res.ok and "connection refused" in res.error
+
+def test_empty_content_counts_as_failure(tmp_path, monkeypatch):
+    monkeypatch.setattr(oa, "_post_json",
+                        lambda u, p, h, t: {"choices": [{"message": {"content": "  "}}]})
+    res = _run(tmp_path)
+    assert not res.ok and res.error == "empty output"
+
+def test_malformed_response_is_reported_not_crashed(tmp_path, monkeypatch):
+    monkeypatch.setattr(oa, "_post_json", lambda u, p, h, t: {"unexpected": True})
+    res = _run(tmp_path)
+    assert not res.ok and "unexpected response" in res.error
+
+def test_the_api_key_never_appears_in_output_error_or_transcript(tmp_path, monkeypatch):
+    def boom(url, payload, headers, timeout):
+        raise OSError(f"upstream rejected {headers['Authorization']}")
+    monkeypatch.setattr(oa, "_post_json", boom)
+    t = tmp_path / "transcript.log"
+    res = _run(tmp_path, transcript_path=t)
+    blob = (res.error or "") + (res.output or "") + (t.read_text() if t.exists() else "")
+    assert "xai-SEKRIT" not in blob
+
+def test_transcript_is_written_to_disk(tmp_path, monkeypatch):
+    monkeypatch.setattr(oa, "_post_json",
+                        lambda u, p, h, t: {"choices": [{"message": {"content": "hi"}}]})
+    t = tmp_path / "transcript.log"
+    _run(tmp_path, transcript_path=t)
+    assert "hi" in t.read_text()
+```
+
+Append to `tests/test_config.py`:
+
+```python
+def test_openai_kind_is_accepted(tmp_path):
+    f = tmp_path / "lanes.yaml"
+    f.write_text("lanes:\n  grok:\n    kind: openai\n    model: grok-4\n    modes: [brain]\n"
+                 "    base_url: https://api.x.ai/v1\n    api_key_path: ~/.config/xai/api_key\n"
+                 "    context_tokens: 256000\n    max_concurrency: 2\n    timeout_default: 300\n")
+    assert load_lanes(f)["grok"].kind == "openai"
+```
+
+Append to `tests/test_health.py`:
+
+```python
+def test_openai_lane_reports_missing_key_file(tmp_path):
+    lane = Lane(name="grok", kind="openai", model="grok-4", modes=["brain"],
+                context_tokens=1, max_concurrency=1, timeout_default=1,
+                base_url="https://api.x.ai/v1", api_key_path=tmp_path / "absent",
+                profile_dir=tmp_path)
+    r = health.check_lane(lane)
+    assert r["ok"] is False and "key file missing" in r["detail"]
+
+def test_openai_lane_flags_a_model_the_provider_does_not_offer(tmp_path, monkeypatch):
+    key = tmp_path / "k"; key.write_text("xai-SEKRIT")
+    monkeypatch.setattr(health, "_get_json", lambda u, t: {"data": [{"id": "grok-3"}]})
+    lane = Lane(name="grok", kind="openai", model="grok-4", modes=["brain"],
+                context_tokens=1, max_concurrency=1, timeout_default=1,
+                base_url="https://api.x.ai/v1", api_key_path=key, profile_dir=tmp_path)
+    r = health.check_lane(lane)
+    assert r["ok"] is False and "not offered" in r["detail"]
+```
+
+- [ ] **Step 2: Run the tests to verify they fail**
+
+Run: `.venv/bin/pytest tests/test_lane_openai.py -v`
+Expected: FAIL with `ImportError: cannot import name 'openai'`
+
+- [ ] **Step 3: Write `switchboard/lanes/openai.py`**
+
+```python
+import json, time, urllib.request
+from pathlib import Path
+from . import LaneResult
+
+def _post_json(url: str, payload: dict, headers: dict, timeout: int) -> dict:
+    req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.loads(r.read())
+
+def run(lane, brief: str, *, mode: str, leash, cwd: Path, timeout: int,
+        transcript_path: Path) -> LaneResult:
+    if mode != "brain":
+        return LaneResult(ok=False, output="", seconds=0.0,
+                          error=f"lane {lane.name!r} supports brain mode only; got mode={mode!r}")
+    if not lane.api_key_path or not lane.api_key_path.exists():
+        return LaneResult(ok=False, output="", seconds=0.0,
+                          error=f"api key file missing: {lane.api_key_path}")
+    key = lane.api_key_path.read_text().strip()
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {key}"}
+    payload = {"model": lane.model, "stream": False,
+               "messages": [{"role": "user", "content": brief}]}
+    t0 = time.monotonic()
+    try:
+        data = _post_json(f"{lane.base_url}/chat/completions", payload, headers, timeout)
+    except Exception as e:
+        # Redact: an upstream error can echo the Authorization header back at us.
+        return LaneResult(ok=False, output="", seconds=time.monotonic() - t0,
+                          error=str(e).replace(key, "[redacted]"))
+    elapsed = time.monotonic() - t0
+    try:
+        content = data["choices"][0]["message"]["content"]
+    except (KeyError, IndexError, TypeError):
+        return LaneResult(ok=False, output="", seconds=elapsed,
+                          error=f"unexpected response shape from {lane.base_url}")
+    transcript_path.parent.mkdir(parents=True, exist_ok=True)
+    transcript_path.write_text(content)
+    if not content.strip():
+        return LaneResult(ok=False, output="", seconds=elapsed, error="empty output")
+    return LaneResult(ok=True, output=content, seconds=elapsed)
+```
+
+- [ ] **Step 4: Register the kind in the three places that dispatch on it**
+
+In `switchboard/config.py`, change the `KINDS` tuple to:
+
+```python
+KINDS = ("anthropic", "gateway", "codex", "ollama", "openai")
+```
+
+In `switchboard/lanes/__init__.py`, change `adapter_for` to:
+
+```python
+def adapter_for(kind: str):
+    from . import anthropic, codex, ollama, openai
+    return {"anthropic": anthropic, "gateway": anthropic,
+            "codex": codex, "ollama": ollama, "openai": openai}[kind]
+```
+
+In `switchboard/health.py`, insert this branch immediately after the `gateway` branch and before the `codex` branch:
+
+```python
+        if lane.kind == "openai":
+            if lane.api_key_path and not lane.api_key_path.exists():
+                return result(False, f"key file missing: {lane.api_key_path}")
+            ids = [m["id"] for m in _get_json(f"{lane.base_url}/models", timeout).get("data", [])]
+            if ids and lane.model not in ids:
+                return result(False, f"model {lane.model!r} not offered by {lane.base_url}; "
+                                     f"provider lists: {', '.join(ids[:5])}")
+            return result(True, f"{lane.model} ready")
+```
+
+- [ ] **Step 5: Run the tests to verify they pass**
+
+Run: `.venv/bin/pytest tests/test_lane_openai.py tests/test_config.py tests/test_health.py -v`
+Expected: 8 passed in `test_lane_openai.py`, 7 in `test_config.py`, 9 in `test_health.py`.
+
+Then the whole suite: `.venv/bin/pytest -q`
+Expected: 88 passed (78 from Tasks 1-9, plus 8 + 1 + 1 added here).
+
+- [ ] **Step 6: Add the `grok` lane to `config/lanes.example.yaml`**
+
+Append inside the `lanes:` block:
+
+```yaml
+  grok:                         # xAI, OpenAI dialect. Brain only: codex exec cannot host it
+                                # (--local-provider takes lmstudio|ollama only, verified 2026-08-29).
+    kind: openai
+    model: grok-4
+    modes: [brain]
+    base_url: https://api.x.ai/v1
+    api_key_path: ~/.config/xai/api_key
+    context_tokens: 256000
+    max_concurrency: 2
+    timeout_default: 300
+```
+
+Deliberately shipped enabled with no key present: `sb lanes --check` then reports
+`DOWN  grok  key file missing: ~/.config/xai/api_key`, which tells the operator exactly
+what to do. A silently disabled lane teaches nothing.
+
+Also add this commented block below it, so adding OpenRouter later is copy-uncomment-edit:
+
+```yaml
+# OpenRouter: same adapter, no code change. Save a key to ~/.config/openrouter/api_key
+# and uncomment. Model ids come from https://openrouter.ai/models.
+#  openrouter:
+#    kind: openai
+#    model: <provider>/<model>
+#    modes: [brain]
+#    base_url: https://openrouter.ai/api/v1
+#    api_key_path: ~/.config/openrouter/api_key
+#    context_tokens: 128000
+#    max_concurrency: 2
+#    timeout_default: 300
+```
+
+- [ ] **Step 7: Add the Grok routing line to `config/rubric.md`**
+
+Insert after the `glm` bullet in the provisional list:
+
+```markdown
+- **Third opinion / tiebreak** -> `grok`. A fourth family with different training and a
+  different house style, which is the whole reason to have it. Brain mode only, so it
+  reviews and reasons, it does not edit files. No graded head-to-head yet - treat its
+  output as unvalidated until the eval kit gives it a score.
+```
+
+Then reinstall the config: `cp ~/remix-switchboard/config/rubric.md ~/.config/switchboard/rubric.md && cp ~/remix-switchboard/config/lanes.example.yaml ~/.config/switchboard/lanes.yaml`
+
+- [ ] **Step 8: Verify the explicit failure state, then the live lane if a key exists**
+
+Run: `~/remix-switchboard/.venv/bin/sb lanes --check`
+Expected with no key: a `DOWN` row for `grok` reading `key file missing: ~/.config/xai/api_key`, and every other lane still `OK`. That is a pass, not a failure.
+
+If `~/.config/xai/api_key` exists, also run:
+`~/remix-switchboard/.venv/bin/sb dispatch --lane grok --mode brain "Reply with exactly: LANE OK"`
+Expected: `[ok]` with the reply. If the key is absent, skip this and note it in the report.
+
+- [ ] **Step 9: Commit and open the PR**
+
+```bash
+cd ~/remix-switchboard
+git switch main && git pull
+git switch -c task-11-lane-openai && git add -A
+git commit -m "feat: openai-dialect lane adapter; grok lane, openrouter one config block away"
+git push -u origin task-11-lane-openai && gh pr create --fill
+```
+
+---
+
 ## Self-Review
 
 **Spec coverage.** Purpose -> Tasks 7, 9. Two modes -> Tasks 3-5 (`mode` parameter; Task 5 refuses `hands`). Lane registry -> Task 1. Isolation vs. leash -> Task 2 (always-on) and Task 3 (leash-driven tool sets, `--clean`, `--mcp`). Briefs for strangers -> Task 10 rubric and skill. CLI surface, all five verbs -> Task 9. Run storage -> Task 6. Output contract: compact default, explicit failures, explicit completion, next-step hints, shortcut-not-gate -> Tasks 3-6, 9 and the README. Safety model -> Task 3 (deny-list, read-only default), Task 7 (`make_worktree`), Task 9 (`--mcp` opt-in). Data policy -> Task 6 (`_scrub`) and the rubric. Routing rubric -> Task 10. The bright line -> asserted by test in Task 9, restated in the README. Agent-native checklist -> the five verbs give CRUD parity; lanes and rubric are config; no gaps found.
