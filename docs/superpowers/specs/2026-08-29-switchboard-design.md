@@ -35,7 +35,7 @@ delegate to lesser models" rule extends across families; it is not replaced.
 
 | Lane | Mode | Result | Latency | Notes |
 |---|---|---|---|---|
-| `codex` (GPT) | hands | LANE OK | 7s | **14,653 tokens for a two-word reply** - dragged Justin's full Codex setup (skills, plugins, 2 failing MCP servers, hooks) into the request. Needs a stripped profile. |
+| `codex` (GPT) | hands | LANE OK | 7s | **14,653 tokens for a two-word reply** - dragged Justin's full Codex setup (skills, plugins, 2 failing MCP servers, hooks) into the request. Cost is a non-issue; the 2 failing MCP servers are the real argument for a lean lane profile. |
 | `glm` (GLM-5.2 via Lunaroute) | hands | LANE OK | 5.5s | Needs `CLAUDE_CODE_MAX_CONTEXT_TOKENS=524288`; emits an unrecognized-model warning; model name churns (`nvfp4` -> `vision` already). |
 | `gemma-small` (gemma4:e4b, 8B) | brain | LANE OK | 9.5s warm | Mini via Tailscale. |
 | `gemma` (gemma4-remix, 26B) | brain | timeout | >90s cold | Needs long timeout and/or Ollama keep-alive. |
@@ -81,16 +81,47 @@ Each lane declares: `kind` (`anthropic-gateway` | `codex-cli` | `ollama`), `mode
 Adding a lane - OpenRouter, a new GLM revision, a future local model - is a config edit, never a
 code change. This is the granularity requirement: routing judgment stays in prompt/config space.
 
-### Clean-room profiles (non-negotiable)
+### Isolation vs. leash (revised 2026-08-29 after Justin's pushback)
 
-Every lane runs against a **stripped profile**: no hooks, no MCP servers, no skills, no user
-settings, its own config/home dir. Claude-dialect lanes get the eval kit's proven treatment
-(`--strict-mcp-config`, `--setting-sources ""`, dedicated `CLAUDE_CONFIG_DIR`). The `codex` lane
-gets the equivalent: dedicated `CODEX_HOME` plus a minimal profile via `-p`.
+The first draft of this spec bundled three unrelated things under one "clean-room profiles
+(non-negotiable)" rule and was wrong to. Separated properly:
 
-Two reasons, both proven today: (a) 14.6k tokens of ambient junk per trivial dispatch, and (b) a
-sub-agent inheriting Justin's desk is not the clean-room second opinion that makes cross-family
-review valuable in the first place.
+**Always on - zero capability cost, genuinely non-negotiable:**
+
+- **Own config/home dir** (`CLAUDE_CONFIG_DIR`, `CODEX_HOME`). The sub-agent gets its own history,
+  auth, and session state so it cannot disturb Justin's real sessions.
+- **Env scrubbing.** If a stray `ANTHROPIC_BASE_URL` leaks, a run labeled `glm` silently executes
+  on Claude and every comparison drawn from it is garbage. Correctness guard, not a restriction.
+- **Messaging deny-list** (no email send/reply/forward, no GChat sender). A dispatched sub-agent
+  must never message a human as Justin.
+
+**Default: full leash.** Skills, repo context, and project conventions are AVAILABLE by default.
+Long leash is the default for work.
+
+Correcting a factual error in the first draft: `--setting-sources ""` and `--strict-mcp-config` do
+**not** strip skills. Verified directly 2026-08-29 - a session with both flags still enumerates its
+skill library. That is why the eval kit's GLM proposal run scored 5/5 on completeness: the skill
+loaded and ran. Those flags remove hooks, user settings, and MCP servers only.
+
+**`--clean` (opt-in): withhold repo conventions and CLAUDE.md.** Justified in exactly one case -
+**adversarial review**. A reviewer briefed on our rulebook agrees with our rulebook; that anchoring
+destroys the point of asking a foreign family. This is a property of *review tasks*, not of foreign
+lanes generally, and the first draft wrongly generalized from the one case to all cases.
+
+**`--mcp` (opt-in): account access.** MCP servers are live write access to Gmail, Drive, Slack,
+RemixOS, and calendar. "Lunaroute may read client text" (settled, see Data policy) and "a GLM agent
+may write to Drive and post in Slack unsupervised" are different decisions, and only the first has
+been made. A misfiring sub-agent holding account keys is a different risk class from one that
+writes mediocre prose. Off by default; on by request per dispatch.
+
+**The test that proved the original rule too tight:** as first written it would have forbidden the
+flagship hybrid lane - "GLM drafts, Claude judges" on `remix-proposal-writer` - which is the
+headline experiment in the eval kit spec. A rule that blocks the best use case is a bad rule.
+
+The 14.6k-token Codex measurement stands as a fact but is **withdrawn as a justification**: it is a
+rounding error, and free through September. It argues for a lean *default* profile on the `codex`
+lane, not for withholding capability. The real reason that lane needs its own profile is that two
+of Justin's MCP servers threw auth errors inside the dispatch - broken ambient config, not cost.
 
 ### Briefs are written for strangers
 
@@ -104,7 +135,7 @@ assumptions.
 
 | Verb | Purpose |
 |---|---|
-| `sb dispatch --lane <l> --mode <m> [--write] [--bg] [--timeout N] <brief>` | Fire a sub-agent. Brief from arg, file, or stdin. |
+| `sb dispatch --lane <l> --mode <m> [--write] [--clean] [--mcp] [--bg] [--timeout N] <brief>` | Fire a sub-agent. Brief from arg, file, or stdin. Full leash by default; `--clean` withholds repo conventions (adversarial review only); `--mcp` grants account access. |
 | `sb list [--active]` | Runs, newest first, with status + lane + elapsed. |
 | `sb log <id> [--full]` | Result (default) or full transcript. |
 | `sb kill <id>` | Stop a running sub-agent. |
@@ -151,6 +182,7 @@ Other interface requirements, from the AXI checklist:
   notify paths. A dispatched sub-agent must never be able to message a human on Justin's behalf.
 - **Concurrency caps per lane** (from `lanes.yaml`), so a fan-out cannot exhaust the Mini or trip
   Apex limits.
+- **Account access is opt-in per dispatch** (`--mcp`), never ambient. See Isolation vs. leash.
 - **Secrets never enter a brief** - see Data policy.
 
 ## Data policy (settled 2026-08-29)
@@ -205,7 +237,7 @@ to `main`.
 ## Scope
 
 **In, v1:** the CLI with all five verbs; `codex`, `glm`, `gemma`, `gemma-small` lanes; both modes;
-clean-room profiles; run storage + ledger; read-only default with worktree `--write`; the routing
+lane isolation (own config dir, env scrubbing, deny-list) with full-leash defaults plus `--clean`/`--mcp` opt-ins; run storage + ledger; read-only default with worktree `--write`; the routing
 rubric file; the Claude Code skill.
 
 **In, v1.1 (trivial once the CLI exists):** Codex `AGENTS.md` pointer and the Cowork skill - the
