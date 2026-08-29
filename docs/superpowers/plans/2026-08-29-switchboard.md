@@ -1868,7 +1868,20 @@ git push -u origin switchboard-skill && gh pr create --fill && gh pr merge --squ
 
 ---
 
-### Task 11: OpenAI-dialect lane adapter (Grok, and OpenRouter for free)
+### Task 11: OpenAI-dialect lane adapter (Grok, and OpenRouter for free) — PARKED
+
+> **PARKED 2026-08-29, same day it was added.** Justin: "i thought that i could use my grok
+> subscription. looks like i can't. no biggie - let's park it for now." Do NOT build this task
+> as part of the v1 run. It is complete and ready to execute the moment a key exists.
+>
+> **Resume condition — either one unparks it:**
+> 1. An xAI API key at `~/.config/xai/api_key`, from console.x.ai (paid separately from any
+>    grok.com / X Premium / SuperGrok consumer subscription, which carries no API access).
+> 2. **An OpenRouter key**, which is the cheaper door: OpenRouter resells Grok alongside every
+>    other major model, speaks this same OpenAI dialect, and needs no xAI account at all. Swap
+>    the lane block for the commented OpenRouter one in Step 6 and this task ships unchanged.
+>
+> Nothing else in the plan depends on this task. Tasks 1-10 stand alone.
 
 Added 2026-08-29 after Justin: "I totally forgot that I have a Grok account."
 
