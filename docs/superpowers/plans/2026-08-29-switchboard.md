@@ -1221,7 +1221,12 @@ from .profile import Leash, resolve_cwd
 from . import runs as R
 
 def make_worktree(repo: Path, run_id: str) -> Path:
-    """Writes land in an isolated git worktree, never the live checkout."""
+    """Every hands-mode dispatch runs in an isolated git worktree, never the live
+    checkout - read-only ones included. Tool denial cannot be trusted as the only
+    guarantee: the tool surface is not ours to enumerate, and a sub-agent with Bash
+    denied still wrote a file through Monitor (verified 2026-08-29). Containment is
+    what actually holds. Read-only runs discard the worktree; --write keeps it for
+    review."""
     wt = R.runs_root() / "worktrees" / run_id
     wt.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(["git", "-C", str(repo), "worktree", "add", "-d", str(wt)],
@@ -1251,8 +1256,12 @@ def dispatch(lane_name: str, brief: str, *, lanes: dict, mode: str = "hands",
                             "started_at": now.isoformat()},
                            root=root)
 
+    # ALL hands-mode dispatches are contained, not just --write. Denial is
+    # best-effort against a tool surface we do not control (verified 2026-08-29:
+    # with Bash denied, a sub-agent wrote a file via the Monitor tool), so the
+    # real guarantee is that nothing it does touches the live tree.
     work_cwd = resolve_cwd(leash, cwd, root / "scratch" / run_id)
-    if leash.write and not leash.clean:
+    if mode == "hands" and not leash.clean:
         work_cwd = make_worktree(cwd, run_id)
 
     result = adapter_for(lane.kind).run(
@@ -1743,11 +1752,20 @@ arrives. The switchboard dials; you decide.
 Say the honest thing, because the three levels are not the same kind of promise:
 
 - `--mode brain` - no tool use at all. Denied outright.
-- `--mode hands` default - genuinely cannot write. Pays for it with no shell (except on
-  `codex`, which keeps the shell and is still genuinely read-only).
-- `--mode hands --write` - **contained, not restricted.** Full shell. Safe because Task 7
-  runs it inside a disposable git worktree, not because the agent is prevented from doing
-  damage. Never describe this level as "restricted".
+- `--mode hands` default - **contained, and denied on a best-effort basis.** The denial
+  list is wide (no shell, no tool-loading) but it is an enumeration of a tool surface we do
+  not control, so it cannot be the guarantee. The guarantee is that the run happens in a
+  disposable worktree and its changes are discarded.
+- `--mode hands --write` - **contained.** Full shell, same disposable worktree, but the
+  worktree is kept for review instead of discarded.
+- **On `codex` only**, read-only is genuinely enforced rather than best-effort: its
+  `--sandbox read-only` is a real OS-level sandbox. It is the one lane where "cannot write"
+  is a fact rather than a policy.
+
+Never describe any Claude-dialect level as "restricted" or "cannot write". The honest words
+are contained (filesystem) and denied (specific named tools). The one place denial IS the
+guarantee is outbound messaging - email and chat leave the machine regardless of which
+directory the agent runs in, so those deny patterns carry weight containment cannot.
 
 ## Always
 
