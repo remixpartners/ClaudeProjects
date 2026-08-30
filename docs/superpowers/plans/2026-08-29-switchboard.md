@@ -681,6 +681,16 @@ git push -u origin task-3-lane-anthropic && gh pr create --fill
 - Consumes: `build_env` from `switchboard.profile`; `LaneResult` from `switchboard.lanes`.
 - Produces: `run(lane, brief, *, mode, leash, cwd, timeout, transcript_path) -> LaneResult` - identical signature to `anthropic.run`.
 
+**Capability difference from Task 3 - do not copy Task 3's read-only handling here.**
+Verified empirically 2026-08-29: `codex exec --sandbox read-only` is a REAL OS-level sandbox.
+Given shell access and told to write a file "by any means - shell redirect, python, anything",
+it created nothing. Claude Code has no equivalent flag, which is why Task 3's read-only mode has
+to give up `Bash` to be honest. Codex does not: its read-only lane keeps full shell access AND
+genuinely cannot write.
+
+Consequence for the routing rubric (Task 10): **read-only work that needs a shell should go to
+the `codex` lane**, because it is the only lane that can offer both.
+
 - [ ] **Step 1: Write the failing test**
 
 Create `tests/test_lane_codex.py`:
@@ -1415,7 +1425,14 @@ git push -u origin task-8-health && gh pr create --fill
 
 **Interfaces:**
 - Consumes: everything from Tasks 1, 6, 7, 8.
-- Produces: `main(argv: list[str] | None = None) -> int`. Verbs: `dispatch`, `list`, `log`, `kill`, `lanes`.
+- Produces: `main(argv: list[str] | None = None) -> int`. Verbs: `dispatch`, `list`, `log`, `lanes`.
+
+**`kill` is deliberately NOT in v1** (removed 2026-08-29 during the build). It cannot work in the
+shape v1 has: `dispatch` is synchronous, `subprocess.run` blocks until the child exits, and no
+live pid is ever captured - `LaneResult.pid` would be `None` on every path. A `kill` verb that can
+never kill anything is a control that never refuses, which is worse than no verb at all. It
+belongs with `--bg` (also not in v1), and the two ship together in v1.1 or not at all. Do not add
+either one back without also making dispatch asynchronous and recording a live pid.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1530,7 +1547,7 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'switchboard.cli'`
 - [ ] **Step 3: Write `switchboard/cli.py`**
 
 ```python
-import argparse, os, signal, sys
+import argparse, sys
 from pathlib import Path
 from .config import config_path, load_lanes
 from .dispatch import dispatch
@@ -1557,9 +1574,6 @@ def _build_parser() -> argparse.ArgumentParser:
 
     g = sub.add_parser("log", help="show a run's result")
     g.add_argument("run_id"); g.add_argument("--full", action="store_true")
-
-    k = sub.add_parser("kill", help="stop a running sub-agent")
-    k.add_argument("run_id")
 
     n = sub.add_parser("lanes", help="available lanes")
     n.add_argument("--check", action="store_true", help="probe each lane and report health")
@@ -1616,22 +1630,6 @@ def main(argv: list[str] | None = None) -> int:
         print(f.read_text() if f.exists() else f"(no {f.name} for this run)")
         return 0
 
-    if args.verb == "kill":
-        try:
-            d = R.find_run(root, args.run_id)
-        except ValueError as e:
-            print(str(e), file=sys.stderr)
-            return 2
-        meta = R.load_meta(d)
-        pid = meta.get("pid")
-        if not pid or meta.get("status") != "running":
-            print(f"run {d.name} is not running (status: {meta.get('status')})")
-            return 0
-        os.kill(pid, signal.SIGTERM)
-        R.finish_run(d, "", {"status": "killed"})
-        print(f"killed {d.name}")
-        return 0
-
     if args.verb == "lanes":
         if args.check:
             rows = check_all(lanes)
@@ -1659,7 +1657,7 @@ Expected: 78 passed
 
 ```bash
 git switch -c task-9-cli && git add -A
-git commit -m "feat: sb CLI with dispatch, list, log, kill, lanes"
+git commit -m "feat: sb CLI with dispatch, list, log, lanes"
 git push -u origin task-9-cli && gh pr create --fill
 ```
 
@@ -1735,6 +1733,21 @@ arrives. The switchboard dials; you decide.
   Haiku on the judgment ladder until eval evidence promotes it. Brain mode only.
 - **Anything client-stakes or fact-critical** -> stays on frontier Claude. Do not
   dispatch it at all.
+- **Read-only work that needs a shell** -> `codex`. It is the only lane that can be both:
+  its `--sandbox read-only` is a real OS-level sandbox (verified 2026-08-29 - given a shell
+  and told to write "by any means", it created nothing). The Claude-dialect lanes have no
+  equivalent, so their read-only mode gives up `Bash` entirely.
+
+## What each level actually guarantees
+
+Say the honest thing, because the three levels are not the same kind of promise:
+
+- `--mode brain` - no tool use at all. Denied outright.
+- `--mode hands` default - genuinely cannot write. Pays for it with no shell (except on
+  `codex`, which keeps the shell and is still genuinely read-only).
+- `--mode hands --write` - **contained, not restricted.** Full shell. Safe because Task 7
+  runs it inside a disposable git worktree, not because the agent is prevented from doing
+  damage. Never describe this level as "restricted".
 
 ## Always
 
@@ -1778,7 +1791,6 @@ updated as eval evidence arrives. You choose the lane; the CLI never chooses for
     sb dispatch --lane <lane> --mode <hands|brain> "<brief>"
     sb list                     # recent runs
     sb log <run-id> [--full]    # result, or the whole transcript
-    sb kill <run-id>
 
 Briefs can be a quoted string, a file path, or `-` to read stdin.
 

@@ -138,14 +138,17 @@ assumptions.
 | `sb dispatch --lane <l> --mode <m> [--write] [--clean] [--mcp] [--bg] [--timeout N] <brief>` | Fire a sub-agent. Brief from arg, file, or stdin. Full leash by default; `--clean` withholds repo conventions (adversarial review only); `--mcp` grants account access. |
 | `sb list [--active]` | Runs, newest first, with status + lane + elapsed. |
 | `sb log <id> [--full]` | Result (default) or full transcript. |
-| `sb kill <id>` | Stop a running sub-agent. |
 | `sb lanes [--check]` | Available lanes; `--check` pings each and reports health. |
 
-`list`/`log`/`kill` are not garnish - dispatch without them is `create` with no `read` or
-`delete`, the CRUD gap flagged in the 2026-07-10 agent-native audit.
+`list`/`log` are not garnish - dispatch without them is `create` with no `read`, the CRUD gap
+flagged in the 2026-07-10 agent-native audit.
 
-**Default is synchronous** (orchestrator waits, gets the result). `--bg` returns a run id
-immediately for long work.
+**`kill` was cut from v1 during the build (2026-08-29).** v1 dispatch is synchronous and never
+captures a live pid, so a `kill` verb could never actually kill anything - a control that never
+refuses. It pairs with `--bg`, and the two return together or not at all.
+
+**v1 is synchronous** (orchestrator waits, gets the result). `--bg` and `kill` were cut from v1
+during the build: they are a pair, and a kill verb with no live pid to kill is worse than no verb.
 
 ### Run storage
 
