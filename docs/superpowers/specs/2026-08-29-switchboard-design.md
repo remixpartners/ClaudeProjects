@@ -135,7 +135,7 @@ assumptions.
 
 | Verb | Purpose |
 |---|---|
-| `sb dispatch --lane <l> --mode <m> [--write] [--clean] [--mcp] [--bg] [--timeout N] <brief>` | Fire a sub-agent. Brief from arg, file, or stdin. Full leash by default; `--clean` withholds repo conventions (adversarial review only); `--mcp` grants account access. |
+| `sb dispatch --lane <l> --mode <m> [--write] [--clean] [--mcp] [--bg] [--timeout N] <brief>` | Fire a sub-agent. Brief from arg, file, or stdin. Full leash by default; `--clean` withholds repo conventions (adversarial review only); `--mcp` grants account access (refused in `brain` mode - see Safety model). |
 | `sb list [--active]` | Runs, newest first, with status + lane + elapsed. |
 | `sb log <id> [--full]` | Result (default) or full transcript. |
 | `sb lanes [--check]` | Available lanes; `--check` pings each and reports health. |
@@ -153,12 +153,28 @@ during the build: they are a pair, and a kill verb with no live pid to kill is w
 ### Run storage
 
 `~/.switchboard/runs/<run-id>/` containing `brief.md`, `result.md`, `transcript.log`, `meta.json`
-(lane, mode, model, exit status, seconds, tokens where available, meter). Plain files: inspectable
+(lane, mode, model, exit status, seconds, and the run meter). Plain files: inspectable
 by Justin, readable by any harness, self-documenting. One line per run appended to
 `~/.switchboard/ledger.jsonl`.
 
 Cost meters are recorded even while everything is effectively free, because the October question
 ("what should move off Claude?") needs the history.
+
+**What the meter can actually hold, per lane** (settled 2026-08-29 in the final review; until
+that landed nothing was recorded anywhere, and history cannot be backfilled):
+
+| Lane kind | Tokens | Cost | How |
+|---|---|---|---|
+| `anthropic`, `gateway` | yes | yes | `claude --print --output-format json` returns one object carrying both the final answer and `usage.input_tokens` / `usage.output_tokens` / `total_cost_usd`. Verified live. Non-JSON stdout falls back to text handling and loses the meter, never the result. |
+| `ollama` | yes | n/a | `prompt_eval_count` / `eval_count` are already in the `/api/chat` body this adapter parses. No cost - it runs on the Mini, which is the point of it. Recorded as null, never a fake 0.0. |
+| `codex` | **no** | no | `codex exec` has no flag that adds usage to ordinary output. The only route is `--json`, which replaces stdout with a JSONL event stream, so it also needs `-o/--output-last-message` to recover the answer plus an event schema this project does not own and cannot pin down without paid live dispatches. Deliberately not guessed at. A codex run's meter is recorded as **absent**, never as zero. |
+
+Meter shape: `{"input_tokens", "output_tokens", "cost_usd", "source"}`, nested under one
+`meter` key in `meta.json` and the ledger. `source` is load-bearing: "this lane cannot report
+tokens" and "this run reported none" are different facts, and conflating them answers the
+October question wrong. (The nesting is also mechanical: the secret-scrubber drops any
+top-level key whose name contains "token", so a flat `input_tokens` field would be deleted on
+the way to disk.)
 
 ### Output contract (token discipline)
 
@@ -178,13 +194,42 @@ Other interface requirements, from the AXI checklist:
 
 ## Safety model
 
-- **Read-only by default.** `--mode hands` runs with a read-only sandbox unless `--write` is given.
-- **`--write` runs in an isolated git worktree**, never the live checkout. Everything inspectable
-  and revertible; the existing `pre-push` agent-guard still protects `main`.
+Corrected in the final whole-branch review (2026-08-29). The original wording below the line
+overclaimed containment for the Claude-dialect lanes and promised a concurrency cap that
+nothing enforced; both are restated honestly here.
+
+- **Read-only by default.** `--mode hands` denies the shell and every tool that could load
+  more tools. On `codex` this is additionally an OS-enforced sandbox (`--sandbox read-only`,
+  verified: given a shell and told to write "by any means", it created nothing). On a
+  Claude-dialect lane it is **denial, not a sandbox** - Claude Code has no OS-level
+  filesystem sandbox, so the denial list is what holds.
+- **`--write` runs in a git worktree**, never the live checkout - but a worktree isolates
+  **git state**, not process capability. On `codex`, `--write` selects `workspace-write`, a
+  real OS sandbox. On a Claude-dialect lane the child is a full-shell
+  `--dangerously-skip-permissions` process whose cwd merely *starts* in the worktree; it can
+  `cd ~`. Same flag, two materially different guarantees. `sb dispatch --write` prints a
+  one-line stderr warning saying which one you got. The existing `pre-push` agent-guard still
+  protects `main`.
 - **Deny-list inherited from the eval kit**: no email send/reply/forward, no GChat sender, no
-  notify paths. A dispatched sub-agent must never be able to message a human on Justin's behalf.
-- **Concurrency caps per lane** (from `lanes.yaml`), so a fan-out cannot exhaust the Mini or trip
-  Apex limits.
+  notify paths. A dispatched sub-agent must never be able to message a human on Justin's
+  behalf. This is the one promise containment could never backstop (email leaves the machine
+  regardless of directory), and it covers **both naming schemes**: the shell spellings
+  (`Bash(gws gmail +send*)`, ...) and the MCP tool-name shape (`mcp__*send*`, `mcp__*mail*`,
+  ... including capitalized variants, since the matcher is case-sensitive). The MCP half was
+  missing until this review: every deny entry was `Bash(...)`-shaped, so under `--mcp` - the
+  exact flag that grants account access - nothing was enforced. Name matching catches names,
+  not capabilities: a server exposing `publish_note` still slips through, and the only
+  airtight generic rule is `mcp__*`, which would make the flag pointless.
+- **`--mode brain --mcp` is refused outright.** Brain denies all tools (an enumeration `--mcp`
+  walks around) and gets no worktree, so the pair is uncontained and account-holding at once.
+- **Concurrency caps per lane are RESERVED, NOT ENFORCED in v1** (decided 2026-08-29). The
+  field is parsed and validated; nothing reads it. v1 dispatch is synchronous and single-run,
+  so `sb` has no fan-out primitive of its own - the only way to exceed a cap is for the
+  calling orchestrator to launch parallel `sb dispatch` processes, which this process cannot
+  see. Enforcing that means cross-process lockfiles with stale-lock reclamation, and forces a
+  product decision nobody has made (does a run over the cap refuse, or queue?). It belongs
+  with `--bg`, which v1 already cut for the same reason: a control with nothing to control is
+  worse than no control. Enforcement returns when `--bg` does.
 - **Account access is opt-in per dispatch** (`--mcp`), never ambient. See Isolation vs. leash.
 - **Secrets never enter a brief** - see Data policy.
 
